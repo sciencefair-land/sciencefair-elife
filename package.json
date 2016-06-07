@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "mkdirp": "^0.5.1",
+    "queue": "^4.0.0",
     "request": "^2.72.0",
     "untildify": "^3.0.2",
     "xml2js": "^0.4.16"
