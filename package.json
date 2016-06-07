@@ -6,10 +6,15 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "bin": {
+    "sf-elife": "cli.js"
+  },
+  "author": "Richard Smith-Unna (@blahah)",
   "license": "ISC",
   "dependencies": {
     "download": "^5.0.0",
+    "exists-file": "^2.0.0",
+    "matched": "^0.4.1",
     "mkdirp": "^0.5.1",
     "moment": "^2.13.0",
     "queue": "^4.0.0",

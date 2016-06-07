@@ -6,6 +6,7 @@ var mkdirp = require('mkdirp')
 var queue = require('queue')
 var moment = require('moment')
 var _ = require('lodash')
+var exists = require('exists-file').sync
 
 function sync (cb) {
   var localdir = untildify('~/.sciencefair/data/elife/')
@@ -14,24 +15,12 @@ function sync (cb) {
   var q = queue({ concurrency: 1 })
 
   var syncFile = function (entry) {
+    if (/pdf$/.test(entry.path)) return false
     var localpath = path.join(localdir, entry.path)
-    try {
-      var stat = fs.statSync(entry.path)
-      var localmod = moment(stat.mtime).valueOf()
-      if (entry.modified > localmod) {
-        // console.log('Remote file is newer. download queued...')
-        q.push(function (next) {
-          s3bucket.syncFile(entry.path, localpath, next)
-        })
-      }
-    } catch (err) {
-      if (err.code === 'ENOENT') {
-        q.push(function (next) {
-          s3bucket.syncFile(entry.path, localpath, next)
-        })
-      } else {
-        console.trace(err)
-      }
+    if (!exists(localpath)) {
+      q.push(function (next) {
+        s3bucket.syncFile(entry.path, localpath, next)
+      })
     }
   }
 
@@ -90,7 +79,7 @@ function sync (cb) {
 
   // only sync the full-sized JPG, and the full article PDF and XML
   function keepfile (entry) {
-    return /v[0-9]+\.(jpg|pdf|xml)/.test(entry.path) && (entry.path.indexOf('figures') === -1)
+    return /v[0-9]+\.(jpg|xml)/.test(entry.path)
   }
 
   function parseEntry (entry) {
