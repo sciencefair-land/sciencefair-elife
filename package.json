@@ -9,7 +9,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "download": "^5.0.0",
     "mkdirp": "^0.5.1",
+    "moment": "^2.13.0",
     "queue": "^4.0.0",
     "request": "^2.72.0",
     "untildify": "^3.0.2",
