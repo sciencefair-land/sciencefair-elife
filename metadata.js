@@ -7,12 +7,16 @@ var untildify = require('untildify')
 
 function toBib (body) {
   var article = body.article.front[0]['article-meta'][0]
-  return {
+  var metadata = {
     title: parseTitle(article['title-group'][0]['article-title'][0]),
     author: parseAuthor(article['contrib-group'][0]),
     identifier: parseIdentifier(article['article-id']),
     year: parseYear(article['pub-date'])
   }
+  metadata.path = metadata.identifier.filter(function (id) {
+    return id.type === 'publisher-id'
+  })[0].id
+  return metadata
 }
 
 function parseTitle (title) {
@@ -58,8 +62,12 @@ glob.sync(['*/*.xml'], { cwd: dir }).forEach(function (xmlfile) {
     var xml = fs.readFileSync(path.join(dir, xmlfile), 'utf8')
     parseString(xml, function (err, body) {
       if (err) throw err
-      fs.writeFileSync(json, JSON.stringify(toBib(body)))
-      console.log('wrote', json)
+      if (body.article) {
+        fs.writeFileSync(json, JSON.stringify(toBib(body)))
+        console.log('wrote', json)
+      } else {
+        console.log('error: malformed XML in file', xmlfile)
+      }
     })
   }
 })

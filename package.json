@@ -1,17 +1,14 @@
 {
   "name": "sciencefair-elife",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.0.1",
+  "description": "Download the eLife corpus and feed it to Science Fair",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "bin": {
     "sf-elife": "cli.js",
     "sciencefair-elife": "cli.js"
   },
   "author": "Richard Smith-Unna (@blahah)",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "download": "^5.0.0",
     "exists-file": "^2.0.0",
