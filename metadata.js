@@ -10,6 +10,7 @@ function toBib (body) {
   var metadata = {
     title: parseTitle(article['title-group'][0]['article-title'][0]),
     author: parseAuthor(article['contrib-group'][0]),
+    abstract: parseAbstract(article['abstract']),
     identifier: parseIdentifier(article['article-id']),
     year: parseYear(article['pub-date'])
   }
@@ -28,12 +29,24 @@ function parseTitle (title) {
 }
 
 function parseAuthor (author) {
+  if (!author.contrib) return []
   return author.contrib.map(function (entry) {
-    return {
-      surname: entry.name[0].surname[0],
-      'given-names': entry.name[0]['given-names'][0]
+    if (entry.name) {
+      return {
+        surname: entry.name[0].surname[0],
+        'given-names': entry.name[0]['given-names'][0]
+      }
+    } else {
+      return null
     }
+  }).filter(function (entry) {
+    return entry != null
   })
+}
+
+function parseAbstract (abstract) {
+  if (abstract && abstract.length > 0) return abstract[0]
+  return null
 }
 
 function parseIdentifier (ids) {
@@ -50,7 +63,8 @@ function parseYear (date) {
 }
 
 console.log('generating metadata')
-var dir = untildify('~/.sciencefair/data/elife_tiny/')
+
+var dir = untildify('~/.sciencefair/data/elife_dws/')
 
 var n = 0
 
