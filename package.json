@@ -12,11 +12,17 @@
   "dependencies": {
     "download": "^5.0.0",
     "exists-file": "^2.0.0",
+    "gramophone": "0.0.3",
+    "jsdom": "^9.3.0",
+    "jsonpack": "^1.1.5",
+    "lodash": "^4.13.1",
     "matched": "^0.4.1",
     "mkdirp": "^0.5.1",
     "moment": "^2.13.0",
     "queue": "^4.0.0",
+    "radix-compression": "0.0.5",
     "request": "^2.72.0",
+    "to-vfile": "^1.0.0",
     "untildify": "^3.0.2",
     "xml2js": "^0.4.16"
   }
