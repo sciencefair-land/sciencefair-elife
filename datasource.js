@@ -38,10 +38,10 @@ function unpack (zip, dst, cb) {
     .on('error', cb)
 }
 
-function getarticles (dir) {
+function getarticles (articledir) {
   // read article filenames and return only the latest version
   // article filename for each article
-  var articles = glob(['*.xml'], { cwd: path.join(dir, 'articles') })
+  var articles = glob(['*.xml'], { cwd: articledir })
   console.log('total number of xml files:', articles.length)
   return _.map(_.groupBy(articles, stripVersion), function (vs) {
     return vs.sort()[vs.length - 1] + '.xml'
@@ -96,6 +96,7 @@ function handlearticles (articles) {
 function movearticles () {
   var src = path.join(dir, 'tmp', 'elife-article-xml-master', 'articles')
   var dst = path.join(dir, 'articles')
+  console.log('moving downloaded articles to', dst)
   mv(src, dst, { clobber: true }, function (err) {
     if (err) throw err
 
