@@ -39,7 +39,8 @@ function unpack (zip, dst, cb) {
 function getarticles (dir) {
   // read article filenames and return only the latest version
   // article filename for each article
-  var articles = glob(['articles/*.xml'], { cwd: dir })
+  var articles = glob(['articles/elife-article-xml-master/articles/*.xml'], { cwd: dir })
+  console.log(articles)
   return _.map(_.groupBy(articles, stripVersion), function (vs) {
     return vs.sort()[vs.length - 1] + '.xml'
   })
