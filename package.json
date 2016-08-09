@@ -10,10 +10,11 @@
   "author": "Richard Smith-Unna (@blahah)",
   "license": "MIT",
   "dependencies": {
+    "beau-selector": "0.0.10",
     "download": "^5.0.0",
     "exists-file": "^2.0.0",
     "gramophone": "0.0.3",
-    "jsdom": "^9.3.0",
+    "jsdom": "^9.4.1",
     "jsonpack": "^1.1.5",
     "lodash": "^4.13.1",
     "matched": "^0.4.1",
@@ -24,6 +25,7 @@
     "request": "^2.72.0",
     "to-vfile": "^1.0.0",
     "untildify": "^3.0.2",
+    "unzip": "^0.1.11",
     "xml2js": "^0.4.16"
   }
 }
