@@ -40,7 +40,8 @@ function unpack (zip, dst, cb) {
 function getarticles (dir) {
   // read article filenames and return only the latest version
   // article filename for each article
-  var articles = glob(['articles/*.xml'], { cwd: dir })
+  var articles = glob(['*.xml'], { cwd: path.join(dir, 'articles') })
+  console.log('total number of xml files:', articles.length)
   return _.map(_.groupBy(articles, stripVersion), function (vs) {
     return vs.sort()[vs.length - 1] + '.xml'
   })
