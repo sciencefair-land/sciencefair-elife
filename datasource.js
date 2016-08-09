@@ -9,6 +9,7 @@ var unzip = require('unzip')
 var glob = require('matched').sync
 var select = require('beau-selector')
 var mv = require('mv')
+var rmdir = require('rmdir')
 
 var xmlzip = 'https://github.com/elifesciences/elife-article-xml/archive/master.zip'
 var listingURL = 'https://elife-publishing-cdn.s3.amazonaws.com/'
@@ -116,6 +117,6 @@ function unpackxml (err) {
   )
 }
 
-rimdir(path.join(dir, 'articles'), function () {
+rmdir(path.join(dir, 'articles'), function () {
   download(xmlzip, path.join(dir, 'tmp', 'articles.zip'), unpackxml)
-}
+})
