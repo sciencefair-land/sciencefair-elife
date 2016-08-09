@@ -8,11 +8,12 @@ var dl = require('download')
 var unzip = require('unzip')
 var glob = require('matched').sync
 var select = require('beau-selector')
+var mv = require('mv')
 
 var xmlzip = 'https://github.com/elifesciences/elife-article-xml/archive/master.zip'
 var listingURL = 'https://elife-publishing-cdn.s3.amazonaws.com/'
 var dir = untildify('~/.sciencefair/data/elife')
-mkdirp(dir)
+mkdirp(path.join(dir, 'tmp'))
 
 var q = queue()
 
@@ -39,8 +40,7 @@ function unpack (zip, dst, cb) {
 function getarticles (dir) {
   // read article filenames and return only the latest version
   // article filename for each article
-  var articles = glob(['articles/elife-article-xml-master/articles/*.xml'], { cwd: dir })
-  console.log(articles)
+  var articles = glob(['articles/*.xml'], { cwd: dir })
   return _.map(_.groupBy(articles, stripVersion), function (vs) {
     return vs.sort()[vs.length - 1] + '.xml'
   })
@@ -91,16 +91,26 @@ function handlearticles (articles) {
   })
 }
 
+function movearticles () {
+  var src = path.join(dir, 'tmp', 'elife-article-xml-master', 'articles')
+  var dst = path.join(dir, 'articles')
+  mv(src, dst, function (err) {
+    if (err) throw err
+
+    var articles = getarticles(dst)
+    console.log('found', articles.length, 'articles')
+    handlearticles(articles)
+  })
+}
+
 function unpackxml (err) {
   if (err) throw err
   unpack(
-    path.join(dir, 'articles.zip'),
-    path.join(dir, 'articles'),
+    path.join(dir, 'tmp', 'articles.zip'),
+    path.join(dir, 'tmp'),
     function (err) {
       if (err) throw err
-      var articles = getarticles(path.join(dir, 'articles'))
-      console.log('found', articles.length, 'articles')
-      handlearticles(articles)
+      movearticles()
     }
   )
 }
