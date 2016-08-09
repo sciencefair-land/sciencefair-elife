@@ -17,17 +17,19 @@ mkdirp(dir)
 var q = queue()
 
 function download (src, dst, cb) {
+  console.log('downloading', src, 'to', dst)
   dl(src)
     .pipe(fs.createWriteStream(dst))
-    .on('end', cb)
+    .on('finish', cb)
 }
 
 function unpack (zip, dst, cb) {
   // unzip downloaded zip file and unpack it
   // returning path of unpacked dir
+  console.log('unpacking', zip, 'to', dst)
   fs.createReadStream(zip)
     .pipe(unzip.Extract({ path: dst }))
-    .on('end', function () {
+    .on('finish', function () {
       console.log('unpacked zip to', dst)
       cb()
     })
