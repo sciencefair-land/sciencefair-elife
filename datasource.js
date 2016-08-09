@@ -44,7 +44,7 @@ function getarticles (articledir) {
   var articles = glob(['*.xml'], { cwd: articledir })
   console.log('total number of xml files:', articles.length)
   return _.map(_.groupBy(articles, stripVersion), function (vs) {
-    return vs.sort()[vs.length - 1] + '.xml'
+    return path.join(articledir, vs.sort()[vs.length - 1])
   })
 }
 
