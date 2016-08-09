@@ -95,7 +95,7 @@ function handlearticles (articles) {
 function movearticles () {
   var src = path.join(dir, 'tmp', 'elife-article-xml-master', 'articles')
   var dst = path.join(dir, 'articles')
-  mv(src, dst, function (err) {
+  mv(src, dst, { clobber: true }, function (err) {
     if (err) throw err
 
     var articles = getarticles(dst)
