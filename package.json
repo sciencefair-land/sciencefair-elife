@@ -24,6 +24,7 @@
     "queue": "^4.0.0",
     "radix-compression": "0.0.5",
     "request": "^2.72.0",
+    "rmdir": "^1.2.0",
     "to-vfile": "^1.0.0",
     "untildify": "^3.0.2",
     "unzip": "^0.1.11",

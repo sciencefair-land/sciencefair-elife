@@ -116,4 +116,6 @@ function unpackxml (err) {
   )
 }
 
-download(xmlzip, path.join(dir, 'tmp', 'articles.zip'), unpackxml)
+rimdir(path.join(dir, 'articles'), function () {
+  download(xmlzip, path.join(dir, 'tmp', 'articles.zip'), unpackxml)
+}
