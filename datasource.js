@@ -85,7 +85,7 @@ function handlearticles (articles) {
   var done = _.after(articles.length, function () {
     q.start()
   })
-  articles.forEach(function (article) {
+  articles.slice(0, 100).forEach(function (article) {
     extractimgpaths(article, function (imgpaths) {
       imgpaths.forEach(queueimgdownload)
       done()
