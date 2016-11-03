@@ -5,13 +5,10 @@ var path = require('path')
 var glob = require('matched')
 var exists = require('exists-file').sync
 var untildify = require('untildify')
-var bib = require('./bibtransform.js')
-var keyworder = require(untildify('~/code/blahah/corpus-keyword-miner/index.js'))
 var _ = require('lodash')
 var mkdirp = require('mkdirp').sync
-var vfile = require('to-vfile')
 
-var dir = untildify('~/.sciencefair/elife_dws2')
+var dir = untildify('~/.sciencefair/elife')
 var articlesDir = path.join(dir, 'articles')
 var metaDir = path.join(dir, 'meta')
 var tmpDir = path.join(dir, 'tmp')
@@ -106,7 +103,7 @@ console.log('generating metadata')
 
 var dirs = glob.sync(['articles/*'], { cwd: dir })
 var articles = []
-dirs.forEach(function (article) {
+dirs.forEach((article) => {
   var articledir = path.join(dir, article)
   if (/xml$/.test(article)) {
     articles.push(articledir)
@@ -126,71 +123,12 @@ function stripVersion (a) {
 // make sure we only have the latest version
 articles = _.map(_.groupBy(articles, stripVersion), function (vs) {
   return vs.sort()[vs.length - 1]
-}).slice(0, 100)
-
-console.log('Running keyword extraction for', articles.length, 'articles')
-
-function mineKeywords () {
-  var keywords = []
-
-  var done = _.after(articles.length, function (err) {
-    if (err) throw err
-
-    var n = articles.length
-
-    var alldfs = _.countBy(keywords)
-
-    console.log('Found', Object.keys(alldfs).length, 'words in', n, 'articles')
-
-    var alldfjson = path.join(tmpDir, 'alldfs.json')
-    fs.writeFileSync(alldfjson, JSON.stringify(alldfs, null, 2), 'utf8')
-
-    var idfs = {}
-
-    _.forEach(alldfs, function (value, key) {
-      idfs[key] = Math.log(n / value)
-    })
-
-    var idfjson = path.join(tmpDir, 'idfs.json')
-    fs.writeFileSync(idfjson, JSON.stringify(idfs, null, 2), 'utf8')
-
-    console.log('Wrote IDF for', Object.keys(idfs).length, 'words to', idfjson)
-
-    calculateTFDF()
-
-    mineMetadata(idfs)
-  })
-
-  var getkeywords = keyworder.use(function () {
-    return function (tree, file) {
-      var space = file.namespace('retext')
-      var all = space.keywords
-        .map(function (p) { return p.stem })
-        .concat(space.keyphrases.map(function (p) { return p.value }))
-      // add to corpus keywords
-      keywords = keywords.concat(_.uniq(all))
-      var savepath = path.join(tmpDir, file.filename + '.keywords.json')
-      fs.writeFileSync(savepath, space.keywords.concat(space.keyphrases))
-    }
-  })
-
-  // count number of documents each word occurs in
-  articles.forEach(function (xmlfile) {
-    getkeywords.process(vfile(xmlfile), function (err, file) {
-      if (err) throw err
-      done()
-    })
-  })
-}
-
-function calculateTFDF () {
-  articles.forEach()
-}
+})
 
 function mineMetadata (idfs) {
   var n = 0
 
-  articles.forEach(function (xmlfile) {
+  articles.forEach((xmlfile) => {
     var parts = path.parse(xmlfile)
     var json = path.join(dir, 'meta', parts.name + '.json')
     if (!exists(json)) {
@@ -200,10 +138,12 @@ function mineMetadata (idfs) {
         charsAsChildren: true,
         explicitChildren: true,
         preserveChildrenOrder: true
-      }, function (err, body) {
+      }, (err, body) => {
         if (err) throw err
         if (body.article) {
-          fs.writeFileSync(json, JSON.stringify(toBib(body)))
+          const bib = toBib(body)
+          bib.entryfile = path.parse(xmlfile).base
+          fs.writeFileSync(json, JSON.stringify(bib))
           console.log('wrote', json)
         } else {
           console.log('error: malformed XML in file', xmlfile)
@@ -219,4 +159,4 @@ function mineMetadata (idfs) {
   }
 }
 
-mineKeywords()
+mineMetadata()
