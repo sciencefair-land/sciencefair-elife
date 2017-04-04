@@ -32,7 +32,7 @@ function toBib (body) {
   var article = body.article.front[0]['article-meta'][0]
   var metadata = {
     title: parseTitle(article['title-group'][0]['article-title']),
-    author: parseAuthor(article['contrib-group'][0]),
+    author: parseAuthor(article['contrib-group']),
     abstract: parseAbstract(article.abstract),
     identifier: parseIdentifier(article['article-id']),
     date: parseDate(article['pub-date']),
@@ -50,7 +50,7 @@ function parseTitle (title) {
 }
 
 function parseAuthor (author) {
-  if (!author.contrib) return []
+  if (!author || author[0] || !author[0].contrib) return []
   return author.contrib.map(function (entry) {
     if (entry.name) {
       return {
