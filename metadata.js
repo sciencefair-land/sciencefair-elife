@@ -141,7 +141,6 @@ function mineMetadata (idfs) {
         if (err) throw err
         if (body.article) {
           const bib = toBib(body)
-          console.log(JSON.stringify(bib, null, 2))
           bib.entryfile = path.parse(xmlfile).base
           bib.files = files
           fs.writeFileSync(json, JSON.stringify(bib))
