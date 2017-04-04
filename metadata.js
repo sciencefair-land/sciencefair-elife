@@ -8,7 +8,7 @@ var untildify = require('untildify')
 var _ = require('lodash')
 var mkdirp = require('mkdirp').sync
 
-var dir = untildify('~/.sciencefair/elife')
+var dir = untildify('/mnt/elife-sciencefair')
 var articlesDir = path.join(dir, 'articles')
 var metaDir = path.join(dir, 'meta')
 var tmpDir = path.join(dir, 'tmp')
@@ -18,10 +18,20 @@ mkdirp(articlesDir)
 mkdirp(metaDir)
 mkdirp(tmpDir)
 
+function buildXML (parts) {
+  return parts.map(function (part) {
+    if (part['#name'] === '__text__') {
+      return part._
+    } else {
+      return `<${part['#name']}>${part._}</${part['#name']}>`
+    }
+  }).join('')
+}
+
 function toBib (body) {
   var article = body.article.front[0]['article-meta'][0]
   var metadata = {
-    title: parseTitle(article['title-group'][0]['article-title'][0]),
+    title: parseTitle(article['title-group'][0]['article-title']),
     author: parseAuthor(article['contrib-group'][0]),
     abstract: parseAbstract(article.abstract),
     identifier: parseIdentifier(article['article-id']),
@@ -36,11 +46,7 @@ function toBib (body) {
 }
 
 function parseTitle (title) {
-  if (typeof title === 'string') {
-    return title
-  } else {
-    return title._
-  }
+  return buildXML(title[0].$$)
 }
 
 function parseAuthor (author) {
@@ -59,15 +65,7 @@ function parseAuthor (author) {
   })
 }
 
-function buildXML (parts) {
-  return parts.map(function (part) {
-    if (part['#name'] === '__text__') {
-      return part._
-    } else {
-      return `<${part['#name']}>${part._}</${part['#name']}>`
-    }
-  }).join('')
-}
+
 
 function parseAbstract (abstract) {
   if (abstract && abstract.length > 0 && abstract[0].p) {
@@ -142,6 +140,7 @@ function mineMetadata (idfs) {
         if (err) throw err
         if (body.article) {
           const bib = toBib(body)
+          console.log(JSON.stringify(bib, null, 2))
           bib.entryfile = path.parse(xmlfile).base
           fs.writeFileSync(json, JSON.stringify(bib))
           console.log('wrote', json)

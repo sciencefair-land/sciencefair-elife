@@ -30,7 +30,7 @@ const client = s3.createClient({
 const keep = /v.-600w\.jpg|-v.\.xml/
 
 const params = {
-  localDir: ".",
+  localDir: dir,
   s3Params: {
     Bucket: bucket,
     Prefix: "",
