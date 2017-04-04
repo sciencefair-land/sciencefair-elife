@@ -50,7 +50,7 @@ function parseTitle (title) {
 }
 
 function parseAuthor (author) {
-  if (!author || author[0] || !author[0].contrib) return []
+  if (!author || !author[0] || !author[0].contrib) return []
   return author.contrib.map(function (entry) {
     if (entry.name) {
       return {
