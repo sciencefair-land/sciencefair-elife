@@ -128,6 +128,7 @@ function mineMetadata (idfs) {
 
   articles.forEach((xmlfile) => {
     var parts = path.parse(xmlfile)
+    var files = fs.readdirSync(parts.dir).filter(name => name !== parts.base)
     var json = path.join(dir, 'meta', parts.name + '.json')
     if (!exists(json)) {
       n += 1
@@ -142,6 +143,7 @@ function mineMetadata (idfs) {
           const bib = toBib(body)
           console.log(JSON.stringify(bib, null, 2))
           bib.entryfile = path.parse(xmlfile).base
+          bib.files = files
           fs.writeFileSync(json, JSON.stringify(bib))
           console.log('wrote', json)
         } else {
